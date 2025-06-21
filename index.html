@@ -13,13 +13,14 @@
             justify-content: center;
             min-height: 100vh;
             background-color: #f0f0f0;
-            margin: 0; /* Remove default body margin */
+            margin: 0;
         }
+
         .container {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
@@ -34,7 +35,7 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             width: 100%;
-            box-sizing: border-box; /* Include padding in width calculation */
+            box-sizing: border-box;
             margin-bottom: 10px;
         }
 
@@ -47,31 +48,107 @@
             cursor: pointer;
             font-size: 1.2em;
         }
+
         #feedback {
             font-size: 1.2em;
             margin-top: 10px;
-            color: #333; /* Darker feedback text */
-        }
-        /* Mobile responsiveness */
-        @media (max-width: 480px) {
-            #question { font-size: 1.5em; }
-            #answer { font-size: 1.2em; }
-            #submit { font-size: 1em; }
-            .container { padding: 15px; }
+            color: #333;
         }
 
+        @media (max-width: 480px) {
+            #question {
+                font-size: 1.5em;
+            }
+
+            #answer {
+                font-size: 1.2em;
+            }
+
+            #submit {
+                font-size: 1em;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container"> </div>
-    <div id="score"></div>
-    <div id="level"></div>
-    <div id="question"></div>
-    <input type="number" id="answer">
-    <button id="submit">Submit</button>
-    <div id="feedback"></div>
+    <div class="container">
+        <div id="score"></div>
+        <div id="level"></div>
+        <div id="question"></div>
+        <input type="number" id="answer">
+        <button id="submit">Submit</button>
+        <div id="feedback"></div>
+    </div>
+
+    <script>
+        let num1, num2, correctAnswer, operator, level = 1, totalQuestions = 0, correctAnswers = 0;
+
+        const question = document.getElementById('question');
+        const answerInput = document.getElementById('answer');
+        const submitBtn = document.getElementById('submit');
+        const feedback = document.getElementById('feedback');
+        const levelDisplay = document.getElementById('level');
+        const scoreDisplay = document.getElementById('score');
+
+        function generateQuestion() {
+            num1 = Math.floor(Math.random() * (level * 10) + 1);
+            num2 = Math.floor(Math.random() * (level * 10) + 1);
+            operator = Math.random() < 0.5 ? '+' : '-';
+
+            question.textContent = `${num1} ${operator} ${num2} = ?`;
+            answerInput.value = '';
+            feedback.textContent = '';
+            totalQuestions++;
+            updateScore();
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInput.value, 10);
+
+            if (operator === '+') {
+                correctAnswer = num1 + num2;
+            } else {
+                correctAnswer = num1 - num2;
+            }
+
+            if (userAnswer === correctAnswer) {
+                feedback.textContent = 'Correct!';
+                correctAnswers++;
+                levelUp();
+                generateQuestion();
+            } else {
+                feedback.textContent = 'Incorrect!'; // Just indicate incorrect, don't show answer
+            }
+
+            updateScore();
+            answerInput.focus();
+        }
+
+        function levelUp() {
+            if (correctAnswers % 10 === 0) {
+                level++;
+                levelDisplay.textContent = level;
+            }
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = `Level: ${level} | Score: ${correctAnswers}`;
+        }
 
 
-    <script src="script.js"></script>
+        submitBtn.addEventListener('click', checkAnswer);
+
+        answerInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        generateQuestion();
+    </script>
 </body>
 </html>
