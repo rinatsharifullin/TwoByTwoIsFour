@@ -121,11 +121,12 @@
                 levelUp();
                 generateQuestion();
             } else {
-                feedback.textContent = 'Incorrect!'; // Just indicate incorrect, don't show answer
+                feedback.textContent = `${userAnswer} - Incorrect answer`; // Show entered value and incorrect message
+                answerInput.value = ''; // Clear the input field
             }
 
             updateScore();
-            answerInput.focus();
+            answerInput.focus(); // Keep focus for next input
         }
 
         function levelUp() {
